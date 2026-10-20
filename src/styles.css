@@ -1,0 +1,358 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-bubble-in: var(--bubble-in);
+  --color-bubble-out: var(--bubble-out);
+  --color-bubble-out-foreground: var(--bubble-out-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* VibeTalk mobile-first theme: deep-green brand, soft rounded surfaces. */
+:root {
+  --radius: 0.875rem;
+  --background: #eaf0ec;
+  --foreground: #14231c;
+  --card: #ffffff;
+  --card-foreground: #14231c;
+  --popover: #ffffff;
+  --popover-foreground: #14231c;
+  --primary: #176b4a;
+  --primary-foreground: #ffffff;
+  --primary-glow: #0e563a;
+  --secondary: #f1f5f2;
+  --secondary-foreground: #14231c;
+  --muted: #eef2ef;
+  --muted-foreground: #66756d;
+  --accent: #d9eee4;
+  --accent-foreground: #0e563a;
+  --destructive: #ca4b55;
+  --destructive-foreground: #ffffff;
+  --border: #dce5df;
+  --input: #dce5df;
+  --ring: #176b4a;
+  --bubble-in: #eef2ef;
+  --bubble-out: #176b4a;
+  --bubble-out-foreground: #ffffff;
+  --sidebar: #f8faf8;
+  --sidebar-foreground: #14231c;
+  --sidebar-primary: #176b4a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #d9eee4;
+  --sidebar-accent-foreground: #0e563a;
+  --sidebar-border: #dce5df;
+  --sidebar-ring: #176b4a;
+
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
+  --gradient-surface: linear-gradient(180deg, var(--card), var(--background));
+  --shadow-sm: 0 1px 2px rgb(19 48 34 / 0.06);
+  --shadow-md: 0 8px 24px -16px rgb(19 48 34 / 0.18);
+  --shadow-lg: 0 20px 50px -24px rgb(19 48 34 / 0.28);
+  --shadow-glow: 0 0 0 1px color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+.dark {
+  --background: #09110e;
+  --foreground: #eef7f2;
+  --card: #111b17;
+  --card-foreground: #eef7f2;
+  --popover: #17231e;
+  --popover-foreground: #eef7f2;
+  --primary: #61c393;
+  --primary-foreground: #092217;
+  --primary-glow: #83d6ad;
+  --secondary: #17231e;
+  --secondary-foreground: #eef7f2;
+  --muted: #1a2721;
+  --muted-foreground: #a1afa7;
+  --accent: #173b2b;
+  --accent-foreground: #83d6ad;
+  --destructive: #f17880;
+  --destructive-foreground: #ffffff;
+  --border: #26342d;
+  --input: #26342d;
+  --ring: #61c393;
+  --bubble-in: #1a2721;
+  --bubble-out: #2a815a;
+  --bubble-out-foreground: #ffffff;
+  --sidebar: #0d1512;
+  --sidebar-foreground: #eef7f2;
+  --sidebar-primary: #61c393;
+  --sidebar-primary-foreground: #092217;
+  --sidebar-accent: #173b2b;
+  --sidebar-accent-foreground: #83d6ad;
+  --sidebar-border: #26342d;
+  --sidebar-ring: #61c393;
+
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
+  --gradient-surface: linear-gradient(180deg, var(--card), var(--background));
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 6px 18px -6px rgb(0 0 0 / 0.55), 0 2px 4px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 24px 60px -20px rgb(0 0 0 / 0.7), 0 6px 16px rgb(0 0 0 / 0.5);
+  --shadow-glow: 0 0 0 1px rgb(97 195 147 / 0.3), 0 12px 40px -8px rgb(97 195 147 / 0.25);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .surface-3d {
+    background: var(--gradient-surface);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+  }
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .nav-active-dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transform: translateX(-50%);
+  }
+  .app-main {
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    flex: 1;
+  }
+  .brand-mark {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border-radius: 0.65rem;
+    color: var(--color-primary-foreground);
+    background: var(--color-primary);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* ---- Buttery-smooth motion polish ---- */
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.6); }
+  60% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.message-enter {
+  animation: message-in 0.22s cubic-bezier(0.21, 0.9, 0.35, 1) both;
+  will-change: transform, opacity;
+}
+.reaction-pop {
+  animation: pop-in 0.25s cubic-bezier(0.21, 0.9, 0.35, 1) both;
+}
+/* Silky scrolling in the conversation + inbox lists */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+@media (prefers-reduced-motion: reduce) {
+  .message-enter,
+  .reaction-pop {
+    animation: none;
+  }
+  .smooth-scroll {
+    scroll-behavior: auto;
+  }
+}
+
+/* Prevent the native long-press callout from fighting our custom menus */
+.no-callout {
+  -webkit-touch-callout: none;
+}
+
+/* Desktop redesign (2026-10-20, Hamza-approved mockup, EXACT spec):
+   token overrides scoped to the desktop breakpoint ONLY. The
+   component split (useIsDesktop) flips at exactly 768px, so below
+   that width nothing here applies — mobile keeps the existing
+   palette and the .dark .vt-mobile invert mechanism untouched.
+   Values are the mockup's own design tokens, verbatim:
+   light — bg #edf3ee, panel #ffffff, panel2 #f3f8f3, ink #152219,
+   muted #66786b, line #dfeae0, green #00a651, green-soft #e1f4e7,
+   greend #15803d, red #9d2235; dark — bg #101214, panel #17191d,
+   panel2 #1f2226, ink #edeff1, muted #9ba2a9, line #272b30,
+   green-soft #152a1e, red #b03044. Desktop renders in Manrope
+   (already loaded via __root for the landing/auth shell). */
+@media (min-width: 768px) {
+  .vt-desktop {
+    font-family:
+      "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  :root {
+    --background: #edf3ee;
+    --foreground: #152219;
+    --card: #ffffff;
+    --card-foreground: #152219;
+    --popover: #ffffff;
+    --popover-foreground: #152219;
+    --primary: #00a651;
+    --primary-foreground: #ffffff;
+    --secondary: #f3f8f3;
+    --secondary-foreground: #152219;
+    --muted: #f3f8f3;
+    --muted-foreground: #66786b;
+    --accent: #e1f4e7;
+    --accent-foreground: #15803d;
+    --destructive: #9d2235;
+    --ring: #00a651;
+    --border: #dfeae0;
+    --input: #dfeae0;
+    --bubble-in: #ffffff;
+    --bubble-out: #00a651;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #152219;
+    --sidebar-accent: #e1f4e7;
+    --sidebar-accent-foreground: #15803d;
+    --sidebar-border: #dfeae0;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: #101214;
+    --foreground: #edeff1;
+    --card: #17191d;
+    --card-foreground: #edeff1;
+    --popover: #1f2226;
+    --popover-foreground: #edeff1;
+    --primary: #00a651;
+    --primary-foreground: #ffffff;
+    --secondary: #1f2226;
+    --secondary-foreground: #edeff1;
+    --muted: #1f2226;
+    --muted-foreground: #9ba2a9;
+    --accent: #152a1e;
+    --accent-foreground: #4cc273;
+    --destructive: #b03044;
+    --ring: #00a651;
+    --border: #272b30;
+    --input: #272b30;
+    --bubble-in: #1e2126;
+    --bubble-out: #00a651;
+    --sidebar: #17191d;
+    --sidebar-foreground: #edeff1;
+    --sidebar-accent: #152a1e;
+    --sidebar-accent-foreground: #4cc273;
+    --sidebar-border: #272b30;
+  }
+  /* Mockup switch geometry (52x30, 24px knob, 3px inset) for the
+     desktop surfaces that opt in via .vt-switch. */
+  .vt-switch {
+    height: 30px;
+    width: 52px;
+    border: 0;
+    box-shadow: none;
+  }
+  .vt-switch > span {
+    height: 24px;
+    width: 24px;
+    /* Audit-7 D1: the Radix thumb also carries Tailwind's
+       translate-x-4, which sets the standalone CSS `translate`
+       property (16px) — a DIFFERENT property from `transform`, so
+       the two composed: 16 + 25 = 41px of travel in a 52px track
+       and the checked knob overflowed by 13px. Inside .vt-switch
+       geometry the transforms below own the offset — reset the
+       utility's translate here (this block is unlayered, so it
+       wins over the utilities layer). */
+    translate: none;
+  }
+  .vt-switch > span[data-state="checked"] {
+    transform: translateX(25px);
+  }
+  .vt-switch > span[data-state="unchecked"] {
+    transform: translateX(3px);
+  }
+  .vt-switch[data-state="unchecked"] {
+    background: #c9d6cb;
+  }
+  .dark .vt-switch[data-state="unchecked"] {
+    background: #3b4046;
+  }
+}
+
+/* Audit-7 D4: the Edit Profile dialog's radius collapsed 16px ->
+   8px at >=640px — the base DialogContent's `sm:rounded-lg` sits
+   later than `rounded-[16px]` in @layer utilities and media queries
+   add no specificity — and its surface painted --background (the
+   page colour) instead of the panel colour, because the override
+   carried no bg. This unlayered rule (same remedy as D1) pins both
+   for the one dialog that opts in via .vt-edit-dialog, across the
+   exact range where the sm: variant activates. --card is the
+   mockup panel: #ffffff light / #17191d dark at desktop tokens. */
+@media (min-width: 640px) {
+  .vt-edit-dialog {
+    border-radius: 16px;
+    background: var(--card);
+  }
+}

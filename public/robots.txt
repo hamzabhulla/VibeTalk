@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hc.hcroom.workers.dev/sitemap.xml

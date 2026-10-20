@@ -1,0 +1,41 @@
+# M73: security headers, served by Cloudflare Workers Static Assets
+# (this file is copied to .output/public/_headers at build time).
+# Keep the /assets/* immutable rule the pipeline generates — if this
+# file replaces the generated one, the cache rule must survive.
+
+# Audit-2 M70 (PARTIAL): script-src-attr 'none' + frame-src 'none' +
+# worker-src 'self' + manifest-src 'self' added (all verified safe:
+# no inline handlers / iframes / workers / manifest in the app).
+# 'unsafe-inline' STAYS on script-src/style-src — full nonce removal
+# is blocked: @tanstack/react-start 1.168.60 has no CSP nonce
+# plumbing, and the 73 style="" attributes cannot take nonces at
+# all (they would all need moving to stylesheets first). Hash
+# allowlisting ALSO fails (Audit-4 M30): TanStack Router's SSR
+# hydration scripts embed per-request serialized loader state
+# (window.$_TSR.router=...), so their content varies per request
+# and no static hash matches them — removing 'unsafe-inline' from
+# script-src would block hydration and break the app. Until a
+# nonce-capable framework version / Nitro rewrite plugin lands with
+# a live hydration test, treat CSP as defense-in-depth, not XSS
+# control.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=()
+  # Audit-2 M71: HSTS — first-visit browsers must not follow http://
+  # links or fall for SSL-strip. NO `preload` directive: both hosts
+  # are subdomains of workers.dev / vercel.app (no apex of ours to
+  # submit), per the audit's own caution.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://fkxgyhnivsaijzwpwpjf.supabase.co; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://fkxgyhnivsaijzwpwpjf.supabase.co wss://fkxgyhnivsaijzwpwpjf.supabase.co; media-src 'self' blob: https://fkxgyhnivsaijzwpwpjf.supabase.co; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; navigate-to 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/assets/*
+  cache-control: public, max-age=31536000, immutable
+
+# Audit-2 M58: the service worker script must never be served from an
+# HTTP cache — a stale sw.js keeps old push/call handling alive. (The
+# register() call also passes updateViaCache: "none".)
+/sw.js
+  cache-control: no-cache

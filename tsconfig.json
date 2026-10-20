@@ -1,0 +1,37 @@
+{
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "vite.config.vercel.ts", "eslint.config.js", "scripts/**/*.mjs"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+
+    /* Linting */
+    "skipLibCheck": true,
+    "strict": true,
+    // Audit-4 L74: unused locals/params are errors (dead code used
+    // to accumulate silently — the codebase had exactly one unused
+    // import when this was enabled).
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // Audit-4 L74: check the deploy-critical scripts/*.mjs too
+    // (they were never typechecked — ESLint plain Node rules only).
+    // The scripts carry JSDoc annotations so checkJs passes under
+    // strict mode. This also checkJs's eslint.config.js (already in
+    // include); it passes clean.
+    "allowJs": true,
+    "checkJs": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

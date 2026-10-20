@@ -1,0 +1,46 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+.output
+.output-dev
+.vinxi
+.tanstack/**
+.nitro
+*.local
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Env — secrets live in dashboards, never in git (M76). .env holds the
+# local keys today (publishable only); the service-role / VAPID-private
+# keys land in this same file pattern, so ignore all of it except the
+# names-only template.
+.env*
+!.env.example
+
+# Vercel build output (M76)
+.vercel/
+
+# pin-vercel-headers snapshot (Audit-4 L71) — build-generated, not source.
+.pin-vercel-headers.snapshot.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
