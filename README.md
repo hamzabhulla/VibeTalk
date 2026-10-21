@@ -34,9 +34,9 @@ VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack 
 
 ## Screenshots
 
-| Chat | Voice notes | Rooms |
+| Chat | Voice notes | Home |
 | --- | --- | --- |
-| ![Chat](docs/screenshots/VibeTalk-Chat-View.png) | ![Voice notes](docs/screenshots/VibeTalk-Voicenote.png) | ![Rooms](docs/screenshots/image.png) |
+| ![Chat](docs/screenshots/VibeTalk-Chat-View.png) | ![Voice notes](docs/screenshots/VibeTalk-Voicenote.png) | ![Rooms](docs/screenshots/VibeTalk-HomeScreen.png) |
 
 | Messages | Direct message thread |
 | --- | --- |
