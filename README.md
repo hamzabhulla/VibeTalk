@@ -10,9 +10,9 @@
 
 [![VibeTalk — Chat at the speed of thought](public/og-image.png)](https://vibetalk.hamzabhulla.workers.dev)
 
-VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack Start, and Supabase**. It combines direct messages, group rooms, live presence, voice notes, WebRTC voice/video calls, reactions, read receipts, and push notifications in one interface designed for both desktop and mobile.
+VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack Start, and Supabase**. It combines direct messages, group rooms, live presence, voice notes, WebRTC voice/video calls, reactions, read receipts, and push notifications in a responsive web app.
 
-> **Project status:** Portfolio / active development. Some features depend on your Supabase schema, auth settings, push credentials, and hosting configuration — see [Getting started](#-getting-started) and [Security notes](#-security-and-privacy-notes) before deploying your own instance.
+> **Project status:** Portfolio / active development. Some features depend on your Supabase schema, auth settings, push credentials, and hosting configuration — see [Getting started](#-getting-started).
 
 ## 👀 Quick look
 
@@ -21,7 +21,7 @@ VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack 
 | **What it is** | A full-stack chat app: DMs and group rooms, voice notes, WebRTC calls, reactions, read receipts, and push notifications |
 | **Try it** | [Live demo](https://vibetalk.hamzabhulla.workers.dev) · [Android APK](https://vibetalk.hamzabhulla.workers.dev/VibeTalk.apk) |
 | **Stack** | React 19 · TypeScript · TanStack Start · Supabase (Auth, Postgres, Realtime, Storage) · Tailwind CSS 4 · Cloudflare Workers |
-| **Engineering highlights** | • Row Level Security plus server-side authorization, with privileged access kept on the server<br>• Optional end-to-end encrypted group text (AES-GCM, per-recipient wrapped keys)<br>• WebRTC voice/video calls with call history<br>• Web Push (VAPID) with per-device subscriptions<br>• Two deployment targets (Cloudflare Workers and Vercel) with parity-check scripts<br>• Honest security notes and known limitations |
+| **Engineering highlights** | • Row Level Security plus server-side authorization, with privileged access kept on the server<br>• Optional end-to-end encrypted group text (AES-GCM, per-recipient wrapped keys) for private rooms<br>• Separate Cloudflare Workers and Vercel deployment targets with parity checks |
 | **Read first** | [Features](#-features) · [Architecture](#-architecture) · [Technical decisions](#-technical-decisions) · [Security notes](#-security-and-privacy-notes) |
 | **Code to look at** | `src/lib/` (server functions, E2EE, push) · `supabase/migrations/` (schema and RLS) · `scripts/` (parity guards) |
 
@@ -29,19 +29,18 @@ VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack 
 
 | | |
 | --- | --- |
-| 🌐 **Web app** | [vibetalk.hamzabhulla.workers.dev](https://vibetalk.hamzabhulla.workers.dev) — [sign up](https://vibetalk.hamzabhulla.workers.dev/register) with your email, or [sign in](https://vibetalk.hamzabhulla.workers.dev/login) |
-| 🤖 **Android** | [Download the APK](https://vibetalk.hamzabhulla.workers.dev/VibeTalk.apk) (Android 7.0+, ~11 MB). You may need to allow "install from unknown sources" for your browser once. The SHA-256 checksum is published on the [landing page](https://vibetalk.hamzabhulla.workers.dev/#download). |
-
-<!--
-SCREENSHOTS: add 3-4 real screenshots or a short GIF to docs/screenshots/ and
-uncomment this block.
+| 🌐 **Web app** | [vibetalk.hamzabhulla.workers.dev](https://vibetalk.hamzabhulla.workers.dev) — [sign up](https://vibetalk.hamzabhulla.workers.dev/register) with your email, or [sign in](https://vibetalk.hamzabhulla.workers.dev/login) if you already have an account |
+| 🤖 **Android** | [Download the APK](https://vibetalk.hamzabhulla.workers.dev/VibeTalk.apk) (Android 7.0+, ~11 MB). You may need to allow "install from unknown sources" for your browser once. The app is built for local testing and demos. |
 
 ## Screenshots
 
 | Chat | Voice notes | Rooms |
 | --- | --- | --- |
-| ![Chat](docs/screenshots/chat.png) | ![Voice notes](docs/screenshots/voice.png) | ![Rooms](docs/screenshots/rooms.png) |
--->
+| ![Chat](docs/screenshots/chat.png) | ![Voice notes](docs/screenshots/voice-notes.png) | ![Rooms](docs/screenshots/rooms.png) |
+
+| Messages | Direct message thread |
+| --- | --- |
+| ![Messages](docs/screenshots/messages.png) | ![Direct message](docs/screenshots/direct-message.png) |
 
 ## ✨ Features
 
@@ -106,13 +105,13 @@ flowchart TD
 
 ## 🧠 Technical decisions
 
-The hardest problems in a chat app are rarely visible in the UI. These are the main engineering decisions behind VibeTalk, why they were made, and what they cost. Several came out of internal security and deployment audit passes, recorded in [`AGENTS.md`](AGENTS.md).
+The hardest problems in a chat app are rarely visible in the UI. These are the main engineering decisions behind VibeTalk, why they were made, and what they cost. Several came out of internal security and reliability reviews.
 
 ### 1. Authorization: never trust the browser
 
-**Challenge.** Anything the browser does — checks, hidden buttons, form limits — can be bypassed by someone with a valid session. In a chat app, a missing server-side check is a private-data leak, not a cosmetic bug.
+**Challenge.** Anything the browser does — checks, hidden buttons, form limits — can be bypassed by someone with a valid session. In a chat app, a missing server-side check is a private-data leak.
 
-**Decision.** Authenticated chat data is protected by **database row policies (Supabase Row Level Security)** and **authenticated server functions**. The service-role key exists only in the hosting provider's secret store and never reaches the client bundle.
+**Decision.** Authenticated chat data is protected by **database row policies (Supabase Row Level Security)** and **authenticated server functions**. The service-role key exists only in the hosting project environment.
 
 ```mermaid
 flowchart LR
@@ -129,7 +128,7 @@ Rules that came out of the audits:
 - `user_metadata` is never an authorization signal — any session can edit its own metadata. State such as "password setup pending" lives in a server-side table that only server functions read or write.
 - Settings that code can't verify (leaked-password protection, the auth redirect-URL allowlist, auth rate limits) are recorded as dashboard requirements, so a fresh project doesn't silently lose them.
 
-**Trade-off.** Some risk is inherent to the platform: a stolen session can still call the auth API directly. The app can't remove that, so it limits the damage with short-lived sessions, global sign-out on password change, and server-side rate limits.
+**Trade-off.** Some risk is inherent to the platform: a stolen session can still call the auth API directly. The app can't remove that, so it limits the damage with short-lived sessions, global sign-out flows, and server-side checks.
 
 ### 2. Realtime delivery that never blocks sending
 
@@ -138,8 +137,8 @@ Rules that came out of the audits:
 **Decision.**
 
 - Messages live in PostgreSQL and are delivered to connected clients through **Supabase Realtime**, so there is no custom WebSocket server to run and secure.
-- For closed or background tabs, a **service worker** receives **Web Push (VAPID)** notifications. Subscriptions are per device, and the service worker handles `pushsubscriptionchange` so subscriptions can renew.
-- **Push is best-effort by design.** The new-message push function does not throw when push configuration is missing, so sending always wins. Instead it logs a throttled configuration error (repeated at most hourly) and surfaces "Server service key missing" in the profile diagnostics, so push never silently stays off. Every other server function fails loudly on missing configuration.
+- For closed or background tabs, a **service worker** receives **Web Push (VAPID)** notifications. Subscriptions are per device, and the service worker handles `pushsubscriptionchange` so subscriptions stay current.
+- **Push is best-effort by design.** The new-message push function does not throw when push configuration is missing, so sending always wins. Instead it logs a throttled configuration error (repeated logs are rate-limited).
 
 ```mermaid
 sequenceDiagram
@@ -184,7 +183,7 @@ sequenceDiagram
 
 ### 4. Shipping to two hosts without shipping stale code
 
-**Challenge.** VibeTalk deploys to Cloudflare Workers and Vercel. Once, a leftover build folder carried an outdated service worker — about half the size of the current one and missing push-subscription renewal — and the live site was serving an even older copy. A stale service worker is a silent failure: the UI looks fine while push quietly breaks.
+**Challenge.** VibeTalk deploys to Cloudflare Workers and Vercel. Once, a leftover build folder carried an outdated service worker — about half the size of the current one and missing push-subscription logic.
 
 **Decision.**
 
@@ -202,7 +201,7 @@ flowchart LR
 - One command rebuilds **both** targets from current source, and each build runs configuration and security-header parity checks.
 - The Vercel build deletes previous output first, so a failed build leaves nothing deployable.
 - After deploying, the live service worker's hash is compared with the source file.
-- Development builds are moved to a non-deployable folder with a marker file. There is deliberately no root Cloudflare config, because deploying from one would ship a Worker without assets or secrets, and the production worker name is pinned during the build so a plain deploy can't create a stray Worker.
+- Development builds are moved to a non-deployable folder with a marker file. There is deliberately no root Cloudflare config, because deploying from one would ship a Worker without assets or secrets.
 
 **Trade-off.** More ceremony per deploy, in exchange for never shipping mismatched artifacts.
 
@@ -243,7 +242,7 @@ cp .env.example .env
 | `VITE_TURN_USERNAME` | *Optional* TURN username |
 | `VITE_TURN_CREDENTIAL` | *Optional* TURN credential — anything prefixed `VITE_` is exposed in the client bundle |
 
-> **Never** put privileged credentials in `.env.example`, source control, screenshots, issue reports, or `VITE_` variables. `SUPABASE_SERVICE_ROLE_KEY` and `VAPID_PRIVATE_KEY` belong in your hosting provider's secret store only.
+> **Never** put privileged credentials in `.env.example`, source control, screenshots, issue reports, or `VITE_` variables. `SUPABASE_SERVICE_ROLE_KEY` and `VAPID_PRIVATE_KEY` belong in your hosting platform's secret store.
 
 The server-side and browser-side Supabase values must point to the **same project** — a mismatch causes auth failures that look like session bugs.
 
@@ -307,7 +306,7 @@ Before deploying:
 
 - Authorization is enforced on the server and in Supabase Row Level Security — client-side checks are not a security boundary.
 - Service-role credentials and VAPID private keys stay server-side. `VITE_*` variables are visible in the compiled bundle.
-- Optional E2EE applies to **text messages in newly created group rooms where E2EE is enabled**. Attachments and voice notes are **not** covered by that layer, so the app as a whole should not be described as end-to-end encrypted.
+- Optional E2EE applies to **text messages in newly created group rooms where E2EE is enabled**. Attachments and voice notes are **not** covered by that layer, so the app as a whole should not be described as fully end-to-end encrypted.
 - WebRTC call security and text-message E2EE are separate concerns; review the call/signaling threat model before making security claims about calls.
 - Review the SQL migration history and the threat-model notes in `AGENTS.md` before production use.
 
