@@ -89,11 +89,11 @@ flowchart TD
     A[Responsive React UI] --> B[TanStack Start server functions]
     A <--> C[Supabase client]
     B --> D[Supabase Auth]
-    B --> E[PostgreSQL + Row Level Security]
+    B --> E[PostgreSQL with Row Level Security]
     B --> F[Supabase Storage]
     A <--> G[Supabase Realtime]
     A <--> H[WebRTC peer connection]
-    B --> I[Web Push / VAPID]
+    B --> I[Web Push with VAPID]
     J[Service Worker] --> K[Browser notifications]
     I --> J
 ```
@@ -116,7 +116,7 @@ The hardest problems in a chat app are rarely visible in the UI. These are the m
 
 ```mermaid
 flowchart LR
-    B["Browser — untrusted"] -->|"user session"| P["PostgreSQL + Row Level Security"]
+    B["Browser - untrusted"] -->|"user session"| P["PostgreSQL with Row Level Security"]
     B -->|"authenticated call"| F["Server functions"]
     F -->|"privileged key, server only"| P
     F --> S["Storage"]
@@ -147,10 +147,10 @@ sequenceDiagram
     participant S as Server and database
     participant R as Recipient app
     participant W as Recipient service worker
-    A->>S: Send message (authenticated)
-    S-->>R: Realtime update (app open)
-    S-->>W: Web Push, best-effort (never blocks the message)
-    W-->>R: Browser notification (app closed)
+    A->>S: Send message, authenticated
+    S-->>R: Realtime update when the app is open
+    S-->>W: Web Push, best effort, never blocks the message
+    W-->>R: Browser notification when the app is closed
 ```
 
 **Trade-off.** A misconfigured server can miss notifications while chat keeps working. The diagnostics exist so that failure is visible instead of silent.
@@ -168,16 +168,16 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant C as Caller
-    participant G as Signaling (app + Supabase)
+    participant G as Signaling via app and Supabase
     participant E as Callee
-    participant N as STUN / TURN
-    C->>G: Call invitation + offer
-    G-->>E: Invitation + offer
+    participant N as STUN and TURN
+    C->>G: Call invitation and offer
+    G-->>E: Invitation and offer
     E->>G: Answer
     G-->>C: Answer
     C->>N: Discover network paths
     E->>N: Discover network paths
-    C-->>E: Media (direct, or relayed through TURN)
+    C-->>E: Media, direct or relayed through TURN
 ```
 
 **Trade-off and next step.** `VITE_` variables are public, so TURN credentials placed there are visible to users and must be restricted and rate-limited. The planned improvement is short-lived TURN credentials minted by the server.
@@ -192,8 +192,8 @@ sequenceDiagram
 flowchart LR
     A["Current source"] --> B["npm run deploy:build"]
     B --> C["Cloudflare build"]
-    B --> D["Vercel build — clears old output first"]
-    C --> E["Config + security-header parity checks"]
+    B --> D["Vercel build, clears old output first"]
+    C --> E["Config and security header parity checks"]
     D --> E
     E --> F["Deploy"]
     F --> G["Compare live sw.js hash to source"]
